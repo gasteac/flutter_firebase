@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -8,7 +9,19 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  final _form = GlobalKey<FormState>();
   var _isLogin = true;
+  var _enteredEmail = '';
+  var _enteredPassword = '';
+  void _submit() {
+    final isValid = _form.currentState!.validate();
+    if (isValid) {
+      _form.currentState!.save();
+      print(_enteredEmail);
+      print(_enteredPassword);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +43,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Form(
+                        key: _form,
                         child:
                             Column(mainAxisSize: MainAxisSize.min, children: [
                           TextFormField(
@@ -38,21 +52,41 @@ class _AuthScreenState extends State<AuthScreen> {
                             keyboardType: TextInputType.emailAddress,
                             autocorrect: false,
                             textCapitalization: TextCapitalization.none,
+                            validator: (value) {
+                              if (value == null ||
+                                  value.trim().isEmpty ||
+                                  !value.contains('@')) {
+                                return 'Por favor ingrese un mail valido.';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _enteredEmail = value!;
+                            },
                           ),
                           TextFormField(
                             decoration:
                                 const InputDecoration(labelText: 'Password'),
                             obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.trim().length < 6) {
+                                return 'Contraseña debe ser mayor a 6 caracteres.';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _enteredPassword = value!;
+                            },
                           ),
-                          const SizedBox(height: 33),
+                          const SizedBox(height: 32),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Theme.of(context)
                                   .colorScheme
                                   .primaryContainer,
                             ),
-                            onPressed: () {},
-                            child: Text(_isLogin ? 'Login' : 'Sign Up'),
+                            onPressed: _submit,
+                            child: Text(_isLogin ? 'Ingresar' : 'Registrarse'),
                           ),
                           TextButton(
                             onPressed: () {
@@ -61,8 +95,8 @@ class _AuthScreenState extends State<AuthScreen> {
                               });
                             },
                             child: Text(_isLogin
-                                ? 'Create new account'
-                                : 'I already have an account'),
+                                ? 'Crear una cuenta'
+                                : 'Ya tengo una cuenta'),
                           )
                         ]),
                       )),
