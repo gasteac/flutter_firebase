@@ -10,7 +10,7 @@ class SplashScreen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('FlutterChat')),
+      appBar: AppBar(title: const Text('ManadaChat🐺')),
       body: const Center(
         child: Text('CARGANDO...')),
     );

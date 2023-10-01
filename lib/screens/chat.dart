@@ -1,37 +1,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/widgets/chat_messages.dart';
+import 'package:flutter_firebase/widgets/new_message.dart';
 
 class ChatScreen extends StatelessWidget {
-  
-
   const ChatScreen({super.key});
 
   @override
-  
   Widget build(BuildContext context) {
-    User? user = FirebaseAuth.instance.currentUser;
-String userEmail = user?.email ?? 'Usuario no autenticado';
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FlutterChat'),
+        title: const Text('ManadaChat🐺'),
         actions: [
-          IconButton(
+          TextButton(
               onPressed: () {
                 FirebaseAuth.instance.signOut();
               },
-              icon: Icon(
-                Icons.exit_to_app_rounded,
-                color: Theme.of(context).colorScheme.primary,
-              ))
+              child: const Text('Cerrar Sesion'),
+              )
         ],
       ),
-      body: Center(child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: const Column(
         children: [
-          const Text('Bienvenido', style: TextStyle(fontSize: 20),),
-          Text(userEmail)
+          Expanded(child: ChatMessages()),
+          NewMessage(),
         ],
-      )),
+      ),
     );
   }
 }
